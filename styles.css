@@ -1,0 +1,65 @@
+:root{
+  --frame-color: #000;
+  --bg: #fff;
+  --text: #111;
+  font-family: "Noto Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* ...existing styles... */
+html,body{
+  height:100%;
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Simple layout */
+.app{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  padding:20px;
+  box-sizing:border-box;
+}
+
+.title{
+  margin:0;
+  font-size:18px;
+  font-weight:600;
+}
+
+.subtitle{
+  margin:4px 0 0 0;
+  color:rgba(0,0,0,0.65);
+  font-size:14px;
+}
+
+/* Content area to demonstrate scrolling and viewport changes */
+.content{
+  margin-top:12px;
+  line-height:1.45;
+  font-size:15px;
+}
+
+/* 1px frame that matches the viewport exactly */
+#viewport-frame{
+  position:fixed;
+  inset:0;                 /* top:0; right:0; bottom:0; left:0; */
+  box-sizing:border-box;
+  pointer-events:none;     /* don't block taps/scrolls on mobile */
+  border:1px solid var(--frame-color);
+  z-index:9999;
+  /* Prevent the frame from creating a scrollbar due to border on some browsers:
+     We use inset:0 with box-sizing:border-box so it aligns with the viewport edges. */
+}
+
+/* Small responsive tweaks */
+@media (max-width:420px){
+  .app{ padding:14px; }
+  .title{ font-size:16px; }
+  .subtitle{ font-size:13px; }
+}
+
