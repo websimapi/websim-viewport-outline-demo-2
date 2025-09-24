@@ -1,26 +1,19 @@
-/*
-  Minimal script to ensure the frame stays perfectly aligned on mobile when address bars
-  show/hide. We set the height to the dynamic viewport unit (100vh can be unreliable).
-*/
+/* ...existing code... */
 (function(){
   const frame = document.getElementById('viewport-frame');
   if(!frame) return;
 
-  // slider hookup
-  const slider = document.getElementById('frame-size');
-  const out = document.getElementById('frame-size-value');
-  function setFrameSize(px) {
-    frame.style.setProperty('--frame-size', px + 'px');
-    if(out) out.textContent = px;
+  const slider = document.getElementById('width-slider');
+  const valueDisplay = document.getElementById('width-value');
+
+  function updateBorder(){
+    const w = slider.value;
+    frame.style.borderWidth = `${w}px`;
+    valueDisplay.textContent = w;
   }
-  if (slider) {
-    slider.addEventListener('input', (e) => setFrameSize(e.target.value));
-    // initialize
-    setFrameSize(slider.value);
-  } else {
-    // fallback
-    setFrameSize(2);
-  }
+
+  slider.addEventListener('input', updateBorder);
+  updateBorder();
 
   function update() {
     // Use the CSS env(safe-area-inset-*) for notch devices and the visualViewport height
@@ -29,7 +22,6 @@
       // position using visualViewport to match the visible viewport area
       const left = vv.offsetLeft || 0;
       const top = vv.offsetTop || 0;
-      // preserve current rotation from CSS animation by only setting translate component
       frame.style.transform = `translate(${left}px, ${top}px)`;
       frame.style.width  = `${vv.width}px`;
       frame.style.height = `${vv.height}px`;
