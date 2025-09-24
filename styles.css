@@ -2,6 +2,7 @@
   --frame-color: #000;
   --bg: #fff;
   --text: #111;
+  --frame-size: 2px; /* default thickness */
   font-family: "Noto Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
@@ -50,11 +51,73 @@ html,body{
   inset:0;                 /* top:0; right:0; bottom:0; left:0; */
   box-sizing:border-box;
   pointer-events:none;     /* don't block taps/scrolls on mobile */
-  border:1px solid var(--frame-color);
   z-index:9999;
-  /* Prevent the frame from creating a scrollbar due to border on some browsers:
-     We use inset:0 with box-sizing:border-box so it aligns with the viewport edges. */
+
+  /* Border using conic-gradient as border-image to create a smooth rainbow ring */
+  border: var(--frame-size) solid transparent;
+  border-image: conic-gradient(
+    from 0deg,
+    #ff3b3b,
+    #ff8a00,
+    #ffd100,
+    #2dd36f,
+    #00a7ff,
+    #6b5cff,
+    #ff3bdb,
+    #ff3b3b
+  ) 1;
+  /* subtle rotation animation */
+  animation: frame-rotate 6s linear infinite;
+  will-change: transform, width, height;
 }
+
+/* rotate the gradient by animating border-image-source via transform on pseudo element isn't possible,
+   but rotating the element itself isn't desired because it moves content; instead we apply a CSS custom property
+   trick by rotating the element's background via an overlayed pseudo isn't necessary for border-image.
+   Animating a rotation on the element keeps the border visual rotating while transform is used only for translate
+   set by script — that's acceptable since we update transform from script as translate only; rotation is combined. */
+@keyframes frame-rotate {
+  to { transform: rotate(360deg); }
+}
+
+/* Keep transform usage consistent: script will write translate(...) so rotation will combine with translate.
+   To ensure correct order, we'll let script include translate in transform and CSS animation will append rotation;
+   modern browsers compose these. */
+
+/* Slider control styles */
+.control{
+  margin-top:16px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  max-width:360px;
+}
+.control label{
+  font-size:13px;
+  color:rgba(0,0,0,0.75);
+}
+#frame-size{
+  -webkit-appearance:none;
+  appearance:none;
+  height:28px;
+  background:transparent;
+}
+#frame-size::-webkit-slider-runnable-track{
+  height:6px;
+  background:linear-gradient(90deg,#ff3b3b,#ff8a00,#ffd100,#2dd36f,#00a7ff,#6b5cff,#ff3bdb);
+  border-radius:6px;
+}
+#frame-size::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:#fff;
+  border:2px solid rgba(0,0,0,0.12);
+  box-shadow:0 1px 2px rgba(0,0,0,0.12);
+  margin-top:-7px;
+}
+#frame-size:focus{ outline:none; }
 
 /* Small responsive tweaks */
 @media (max-width:420px){
@@ -62,4 +125,3 @@ html,body{
   .title{ font-size:16px; }
   .subtitle{ font-size:13px; }
 }
-
